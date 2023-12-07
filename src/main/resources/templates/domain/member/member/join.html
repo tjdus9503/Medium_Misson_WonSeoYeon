@@ -1,28 +1,86 @@
-<html layout:decorate="~{global/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{/global/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>회원가입</title>
+</head>
+
+<body>
 <div layout:fragment="content" class="container mx-auto my-3 flex flex-col items-center">
     <div class="my-3 border-b">
         <div>
             <h4>회원가입</h4>
         </div>
     </div>
-    <form th:action="@{/user/signup}" method="post">
+    <form th:action method="post" onsubmit="submitJoinForm(this); return false;">
         <div class="mb-3 flex flex-col">
             <label for="username" class="daisy-label mb-1">사용자ID</label>
-            <input type="text" id="username" placeholder="사용자ID를 입력하세요." class="input input-bordered w-full max-w-xs" />
+            <input type="text" name="username" id="username" placeholder="사용자ID를 입력하세요." class="input input-bordered w-full max-w-xs" />
         </div>
         <div class="mb-3 flex flex-col">
-            <label for="password1" class="daisy-label mb-1">비밀번호</label>
-            <input type="password" id="password1" placeholder="비밀번호를 입력하세요." class="input input-bordered w-full max-w-xs" />
+            <label for="password" class="daisy-label mb-1">비밀번호</label>
+            <input type="password" name="password" id="password" placeholder="비밀번호를 입력하세요." class="input input-bordered w-full max-w-xs" />
         </div>
         <div class="mb-3 flex flex-col">
-            <label for="password2" class="daisy-label mb-1">비밀번호 확인</label>
-            <input type="password" id="password2" placeholder="비밀번호를 다시 입력하세요." class="input input-bordered w-full max-w-xs" />
+            <label for="passwordConfirm" class="daisy-label mb-1">비밀번호 확인</label>
+            <input type="password" name="passwordConfirm" id="passwordConfirm" placeholder="비밀번호를 다시 입력하세요." class="input input-bordered w-full max-w-xs" />
         </div>
         <div class="mb-3 flex flex-col">
             <label for="email" class="daisy-label mb-1">이메일</label>
-            <input type="email" id="email" placeholder="이메일을 입력하세요." class="input input-bordered w-full max-w-xs" />
+            <input type="email" name="email" id="email" placeholder="이메일을 입력하세요." class="input input-bordered w-full max-w-xs" />
         </div>
         <button type="submit" class="btn btn-warning">회원가입</button>
     </form>
+
+    <script>
+        function submitJoinForm(form) {
+            form.username.value = form.username.value.trim();
+
+            if (form.username.value.length == 0) {
+                toastWarning('아이디를 입력해주세요.');
+                form.username.focus();
+
+                return;
+            }
+
+            form.password.value = form.password.value.trim();
+
+            if (form.password.value.length == 0) {
+                toastWarning('비밀번호를 입력해주세요.');
+                form.password.focus();
+
+                return;
+            }
+
+            form.passwordConfirm.value = form.passwordConfirm.value.trim();
+
+            if (form.passwordConfirm.value.length == 0) {
+                toastWarning('비밀번호 확인을 입력해주세요.');
+                form.passwordConfirm.focus();
+
+                return;
+            }
+
+            form.email.value = form.email.value.trim();
+
+            if (form.email.value.length == 0) {
+                toastWarning('이메일을 입력해주세요.');
+                form.email.focus();
+
+                return;
+            }
+
+            if (form.password.value != form.passwordConfirm.value) {
+                toastWarning('비밀번호가 일치하지 않습니다.');
+                form.passwordConfirm.focus();
+
+                return;
+            }
+
+            form.submit();
+        }
+    </script>
 </div>
+
+</body>
+
 </html>
