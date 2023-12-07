@@ -1,1 +1,28 @@
-회원가입 페이지
+<html layout:decorate="~{global/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<div layout:fragment="content" class="container mx-auto my-3">
+    <div class="my-3 border-b">
+        <div>
+            <h4>회원가입</h4>
+        </div>
+    </div>
+    <form th:action="@{/user/signup}" method="post">
+        <div class="mb-3 flex flex-col">
+            <label for="username" class="daisy-label">사용자ID</label>
+            <input type="text" id="username" class="border rounded p-2 focus:outline-none focus:border-blue-500">
+        </div>
+        <div class="mb-3 flex flex-col">
+            <label for="password1" class="daisy-label">비밀번호</label>
+            <input type="password" id="password1" class="border rounded p-2 focus:outline-none focus:border-blue-500">
+        </div>
+        <div class="mb-3 flex flex-col">
+            <label for="password2" class="daisy-label">비밀번호 확인</label>
+            <input type="password" id="password2" class="border rounded p-2 focus:outline-none focus:border-blue-500">
+        </div>
+        <div class="mb-3 flex flex-col">
+            <label for="email" class="daisy-label">이메일</label>
+            <input type="email" id="email" class="border rounded p-2 focus:outline-none focus:border-blue-500">
+        </div>
+        <button type="submit" class="btn btn-accent">회원가입</button>
+    </form>
+</div>
+</html>
