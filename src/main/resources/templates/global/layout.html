@@ -11,7 +11,8 @@
 </head>
 <body>
 
-<th:block layout:fragment="header"></th:block>
+<nav th:replace="~{global/navbar :: navbarFragment}"></nav>
+<!--<th:block layout:fragment="header"></th:block>-->
 
 <th:block layout:fragment="content"></th:block>
 
