@@ -25,7 +25,7 @@ public class MemberService {
     public Optional<MemberDto> findDtoByUsername(String username) {
         Optional<Member> memberOptional = this.findByUsername(username);
 
-        return memberOptional.map(this::toDto);
+        return memberOptional.map(MemberDto::new);
     }
 
     @Transactional
@@ -46,15 +46,7 @@ public class MemberService {
         return new RsData<>(
                 "200",
                 "%s님 환영합니다. 로그인을 해보세요.".formatted(member.getUsername()),
-                toDto(member)
+                new MemberDto(member)
         );
-    }
-
-    public MemberDto toDto (Member member) {
-        return MemberDto.builder()
-                .id(member.getId())
-                .username(member.getUsername())
-                .email(member.getEmail())
-                .build();
     }
 }

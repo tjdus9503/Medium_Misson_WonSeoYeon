@@ -1,14 +1,17 @@
 package com.ll.medium.domain.member.member.dto;
 
-import lombok.Builder;
+import com.ll.medium.domain.member.member.entity.Member;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
-@Builder
 public class MemberDto {
     private Long id;
     private String username;
     private String email;
+
+    public MemberDto (Member member) {
+        id = member.getId();
+        username = member.getUsername();
+        email = member.getEmail();
+    }
 }
