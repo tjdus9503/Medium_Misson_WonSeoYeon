@@ -6,18 +6,18 @@
     <title>MEDIUM</title>
 
     <link rel="stylesheet" type="text/css" href="/global.css">
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css"/>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://jhs512.github.io/toastr/toastr.css" rel="stylesheet">
 </head>
+
 <body>
 
 <nav th:replace="~{global/navbar :: navbarFragment}"></nav>
-<!--<th:block layout:fragment="header"></th:block>-->
 
 <th:block layout:fragment="content"></th:block>
 
-
+<!-- 테일윈드, 데이지UI -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css"/>
 <!-- 제이쿼리 불러오기 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <!-- toastr 불러오기 -->
