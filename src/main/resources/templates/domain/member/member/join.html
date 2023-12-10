@@ -13,20 +13,20 @@
     </div>
     <form th:action method="post" onsubmit="submitJoinForm(this); return false;">
         <div class="mb-3 flex flex-col">
-            <label for="username" class="daisy-label mb-1">사용자ID</label>
-            <input type="text" name="username" id="username" placeholder="사용자ID를 입력하세요." class="input input-bordered w-full max-w-xs" />
+            <label for="username" class="daisy-label mb-1">아이디</label>
+            <input type="text" name="username" id="username" placeholder="아이디" class="input input-bordered w-full max-w-xs" />
         </div>
         <div class="mb-3 flex flex-col">
             <label for="password" class="daisy-label mb-1">비밀번호</label>
-            <input type="password" name="password" id="password" placeholder="비밀번호를 입력하세요." class="input input-bordered w-full max-w-xs" />
+            <input type="password" name="password" id="password" placeholder="비밀번호" class="input input-bordered w-full max-w-xs" />
         </div>
         <div class="mb-3 flex flex-col">
             <label for="passwordConfirm" class="daisy-label mb-1">비밀번호 확인</label>
-            <input type="password" name="passwordConfirm" id="passwordConfirm" placeholder="비밀번호를 다시 입력하세요." class="input input-bordered w-full max-w-xs" />
+            <input type="password" name="passwordConfirm" id="passwordConfirm" placeholder="비밀번호 확인" class="input input-bordered w-full max-w-xs" />
         </div>
         <div class="mb-3 flex flex-col">
             <label for="email" class="daisy-label mb-1">이메일</label>
-            <input type="email" name="email" id="email" placeholder="이메일을 입력하세요." class="input input-bordered w-full max-w-xs" />
+            <input type="email" name="email" id="email" placeholder="이메일" class="input input-bordered w-full max-w-xs" />
         </div>
         <button type="submit" class="btn btn-warning w-full max-w-xs">회원가입</button>
     </form>
