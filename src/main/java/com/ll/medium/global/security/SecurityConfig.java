@@ -33,6 +33,11 @@ public class SecurityConfig {
                         formLogin -> formLogin
                                 .loginPage("/member/login")
                                 .defaultSuccessUrl("/")
+                )
+                .logout(
+                        logout -> logout
+                                .logoutUrl("/member/logout")
+                                .logoutSuccessUrl("/")
                 );
 
         return http.build();
