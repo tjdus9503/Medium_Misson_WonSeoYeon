@@ -4,11 +4,14 @@ import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.domain.member.member.service.MemberService;
 import com.ll.medium.global.rsData.RsData;
 import com.ll.medium.standard.util.Ut;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
@@ -29,6 +32,16 @@ public class Rq {
     private User user;
     private Member member;
 
+    @PostConstruct
+    public void init() {
+        // 현재 로그인한 회원의 인증정보를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getPrincipal() instanceof User) {
+            this.user = (User) authentication.getPrincipal();
+        }
+    }
+
     public boolean isLogined() {
         return user != null;
     }
@@ -42,18 +55,6 @@ public class Rq {
             member = memberService.findByUsername(user.getUsername()).get();
 
         return member;
-    }
-
-    public void setSessionAttr(String name, Object value) {
-        req.getSession().setAttribute(name, value);
-    }
-
-    public <T> T getSessionAttr(String name) {
-        return (T) req.getSession().getAttribute(name);
-    }
-
-    public void removeSessionAttr(String name) {
-        req.getSession().removeAttribute(name);
     }
 
     public String redirect(String path, String msg) {
