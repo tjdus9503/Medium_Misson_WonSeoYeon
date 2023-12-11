@@ -49,4 +49,8 @@ public class MemberService {
                 new MemberDto(member)
         );
     }
+
+    public long count() {
+        return memberRepository.count();
+    }
 }
