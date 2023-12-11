@@ -39,6 +39,15 @@
 
             form.submit();
         }
+
+        /* 로그인 오류에 대한 알림 처리 */
+        const currentUrl = window.location.href;
+        var queryString = currentUrl.split('?')[1];
+
+        if (queryString && queryString.includes('error')) {
+            toastWarning('아이디 또는 비밀번호를 확인해 주세요.');
+        }
+
     </script>
 </div>
 </html>
