@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 @Profile("!prod")
@@ -39,12 +40,12 @@ public class NotProd {
 
         if (articleService.count() > 0) return;
 
-        Member member1 = memberService.findByUsername(member1_uname).get();
-        Member member2 = memberService.findByUsername(member2_uname).get();
-        Member member3 = memberService.findByUsername(member3_uname).get();
+        List<String> usernames = List.of(member1_uname, member2_uname, member3_uname);
+        List<Member> members = usernames.stream().map(username -> memberService.findByUsername(username).get()).toList();
 
-        IntStream.rangeClosed(1, 100).forEach(num -> articleService.write(member1, "제목 " + num, "내용 " + num, true));
-        IntStream.rangeClosed(101, 200).forEach(num -> articleService.write(member2, "제목 " + num, "내용 " + num, true));
-        IntStream.rangeClosed(201, 300).forEach(num -> articleService.write(member3, "제목 " + num, "내용 " + num, true));
+        IntStream.rangeClosed(1, 300).forEach(num -> {
+            Member author = members.get(num % 3);
+            articleService.write(author, "제목 " + num, "내용 " + num, num % 2 != 0);
+        });
     }
 }
