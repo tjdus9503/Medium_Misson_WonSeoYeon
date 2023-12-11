@@ -1,4 +1,4 @@
-package com.ll.medium.domain.article.article.entity;
+package com.ll.medium.domain.post.post.entity;
 
 import com.ll.medium.domain.member.member.entity.Member;
 import jakarta.persistence.*;
@@ -21,7 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode
 @EntityListeners(AuditingEntityListener.class)
-public class Article {
+public class Post {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @EqualsAndHashCode.Include

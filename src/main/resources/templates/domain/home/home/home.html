@@ -1,6 +1,6 @@
 <html layout:decorate="~{global/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <div layout:fragment="content" class="container mx-auto my-3">
-    홈
+    <h1 class="font-bold mb-2"> 홈</h1>
     <div class="overflow-x-auto">
         <table class="table">
             <thead>
@@ -13,11 +13,11 @@
             </thead>
 
             <tbody>
-            <tr th:each="article : ${articles}" class="hover text-center">
-                <th th:text="${article.id}"></th>
-                <td th:text="${article.title}" class="text-left"></td>
-                <td th:text="${article.author.username}"></td>
-                <td th:text="${#temporals.format(article.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <tr th:each="post : ${posts}" class="hover text-center">
+                <th th:text="${post.id}"></th>
+                <td th:text="${post.title}" class="text-left"></td>
+                <td th:text="${post.authorName}"></td>
+                <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
             </tbody>
         </table>

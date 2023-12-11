@@ -1,0 +1,72 @@
+<html layout:decorate="~{global/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <title>글 목록</title>
+</head>
+<div layout:fragment="content" class="container mx-auto my-3">
+    <h1 class="font-bold mb-2"> 글 목록</h1>
+    <!-- 테이블 시작 -->
+    <div class="overflow-x-auto">
+        <table class="table">
+            <thead>
+            <tr class="text-center">
+                <th class="w-1/10">번호</th>
+                <th class="w-7/12">제목</th>
+                <th class="w-2/12">작성자</th>
+                <th class="w-2/12">작성일시</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="post : ${paging}" class="hover text-center">
+                <th th:text="${post.id}"></th>
+                <td th:text="${post.title}" class="text-left"></td>
+                <td th:text="${post.authorName}"></td>
+                <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- 페이징 처리 시작 -->
+    <div th:if="${!paging.isEmpty()}" th:with="currPage = ${paging.number + 1}"
+         class="join w-full justify-center">
+        <div>
+            <a th:classappend="|${currPage == 1 ? 'btn-warning' : ''} ${paging.totalPages == 1 ? '' : 'join-item'}|"
+               th:text="1"
+               th:href="@{|?page=1|}"
+               class="btn"></a>
+        </div>
+
+        <th:block th:if="${paging.totalPages > 1}">
+            <div th:if="${currPage - 4 > 2}">
+                <a th:text="..."
+                   th:href="@{|?page=${currPage - 4 - 1}|}"
+                   class="join-item btn"></a>
+            </div>
+
+            <th:block th:if="${paging.totalPages > 2}">
+                <div th:each="page : ${#numbers.sequence(2, paging.totalPages - 1)}"
+                     th:if="${page >= currPage - 4 && page <= currPage + 4}">
+                    <a th:classappend="${page == currPage} ? 'btn-warning'"
+                       th:text="${page}"
+                       th:href="@{|?page=${page}|}"
+                       class="join-item btn"></a>
+                </div>
+            </th:block>
+
+            <div th:if="${currPage + 4 < paging.totalPages - 1}">
+                <a th:text="..."
+                   th:href="@{|?page=${currPage + 4 + 1}|}"
+                   class="join-item btn"></a>
+            </div>
+
+            <div>
+                <a th:classappend="${currPage == paging.totalPages} ? 'btn-warning'"
+                   th:text="${paging.totalPages}"
+                   th:href="@{|?page=${paging.totalPages}|}"
+                   class="join-item btn"></a>
+            </div>
+        </th:block>
+    </div>
+    <!-- 페이징 처리 끝 -->
+</div>
+</html>

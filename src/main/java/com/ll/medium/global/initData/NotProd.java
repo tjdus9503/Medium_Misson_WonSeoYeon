@@ -1,6 +1,6 @@
 package com.ll.medium.global.initData;
 
-import com.ll.medium.domain.article.article.service.ArticleService;
+import com.ll.medium.domain.post.post.service.PostService;
 import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.domain.member.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class NotProd {
     @Lazy
     private NotProd self;
     private final MemberService memberService;
-    private final ArticleService articleService;
+    private final PostService postService;
 
     @Bean
     public ApplicationRunner initNotProd() {
@@ -38,14 +38,14 @@ public class NotProd {
         String member2_uname = memberService.join("user2", "1234", "aa@aa").getData().getUsername();
         String member3_uname = memberService.join("user3", "1234", "aa@aa").getData().getUsername();
 
-        if (articleService.count() > 0) return;
+        if (postService.count() > 0) return;
 
         List<String> usernames = List.of(member1_uname, member2_uname, member3_uname);
         List<Member> members = usernames.stream().map(username -> memberService.findByUsername(username).get()).toList();
 
-        IntStream.rangeClosed(1, 300).forEach(num -> {
+        IntStream.rangeClosed(1, 500).forEach(num -> {
             Member author = members.get(num % 3);
-            articleService.write(author, "제목 " + num, "내용 " + num, num % 2 != 0);
+            postService.write(author, "제목 " + num, "내용 " + num, num % 2 != 0);
         });
     }
 }

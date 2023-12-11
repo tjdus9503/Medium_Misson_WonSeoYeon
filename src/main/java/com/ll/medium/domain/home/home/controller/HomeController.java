@@ -1,7 +1,7 @@
 package com.ll.medium.domain.home.home.controller;
 
-import com.ll.medium.domain.article.article.entity.Article;
-import com.ll.medium.domain.article.article.service.ArticleService;
+import com.ll.medium.domain.post.post.dto.PostDto;
+import com.ll.medium.domain.post.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,14 +12,13 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
-    private final ArticleService articleService;
+    private final PostService articleService;
 
     @GetMapping("/")
     public String showMain(Model model) {
-        List<Article> articles = articleService.getRecentPublishedArticles();
+        List<PostDto> articles = articleService.getRecentPublishedPosts();
 
-        System.out.println("articles 자료의 갯수 : " + articles.size());
-        model.addAttribute("articles", articles);
+        model.addAttribute("posts", articles);
 
         return "/domain/home/home/home";
     }
