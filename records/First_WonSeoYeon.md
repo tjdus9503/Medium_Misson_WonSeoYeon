@@ -45,7 +45,7 @@
 - [x] GET /post/1 : 1번 글 상세보기
 
 글 작성
-- [ ] GET /post/write : 글 작성 폼
+- [x] GET /post/write : 글 작성 폼
 - [ ] POST /post/write : 글 작성 처리
 
 글 수정
