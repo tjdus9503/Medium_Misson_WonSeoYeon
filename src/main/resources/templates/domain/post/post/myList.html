@@ -1,10 +1,10 @@
 <html layout:decorate="~{global/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
-    <title>글 목록</title>
+    <title>내 글 목록</title>
 </head>
 <body>
     <div layout:fragment="content" class="container mx-auto my-3">
-        <h1 class="font-bold mb-2"> 글 목록</h1>
+        <h1 class="font-bold mb-2"> 내 글 목록</h1>
         <!-- 테이블 -->
         <div class="overflow-x-auto">
             <table class="table">
@@ -20,7 +20,10 @@
                 <tbody>
                 <tr th:each="post : ${paging}" class="hover text-center">
                     <th th:text="${post.id}"></th>
-                    <td th:text="${post.title}" class="text-left"></td>
+                    <td class="text-left">
+                        <span th:text="${post.title}"></span>
+                        <span th:if="${!post.published}" class="badge badge-success badge-md ml-2" style="color: white">비공개</span>
+                    </td>
                     <td th:text="${post.authorName}"></td>
                     <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"></td>
                 </tr>

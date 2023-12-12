@@ -18,32 +18,31 @@
 </head>
 
 <body>
-<!-- 테일윈드, 데이지UI -->
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css"/>
+    <!-- 테일윈드, 데이지UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css"/>
 
-<nav th:replace="~{global/navbar :: navbarFragment}"></nav>
+    <nav th:replace="~{global/fragment/navbar :: navbarFragment}"></nav>
 
-<th:block layout:fragment="content"></th:block>
+    <th:block layout:fragment="content"></th:block>
 
-<script>
-    /* 일반적인 msg 알림 처리 */
-    const queryParams = getQueryParams();
+    <script>
+        /* 일반적인 msg 알림 처리 */
+        const queryParams = getQueryParams();
 
-    if (queryParams.msg) {
-        toastNotice(queryParams.msg);
-    }
-
-    /* historyBack에 대한 msg 알림 처리 */
-    $(window).bind("pageshow", function (event) {
-        const historyBackMsg = localStorage.getItem('historyBackMsg');
-
-        if (historyBackMsg) {
-            toastWarning(historyBackMsg);
-            localStorage.removeItem('historyBackMsg');
+        if (queryParams.msg) {
+            toastNotice(queryParams.msg);
         }
-    });
-</script>
 
+        /* historyBack에 대한 msg 알림 처리 */
+        $(window).bind("pageshow", function (event) {
+            const historyBackMsg = localStorage.getItem('historyBackMsg');
+
+            if (historyBackMsg) {
+                toastWarning(historyBackMsg);
+                localStorage.removeItem('historyBackMsg');
+            }
+        });
+    </script>
 </body>
 </html>

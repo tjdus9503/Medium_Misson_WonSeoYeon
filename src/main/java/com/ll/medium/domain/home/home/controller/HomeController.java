@@ -12,13 +12,13 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
-    private final PostService articleService;
+    private final PostService postService;
 
     @GetMapping("/")
     public String showMain(Model model) {
-        List<PostDto> articles = articleService.getRecentPublishedPosts();
+        List<PostDto> posts = postService.getRecentPublishedPosts();
 
-        model.addAttribute("posts", articles);
+        model.addAttribute("posts", posts);
 
         return "/domain/home/home/home";
     }

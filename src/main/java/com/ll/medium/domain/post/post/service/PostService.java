@@ -1,14 +1,14 @@
 package com.ll.medium.domain.post.post.service;
 
+import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.entity.Post;
 import com.ll.medium.domain.post.post.repository.PostRepository;
-import com.ll.medium.domain.member.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +37,8 @@ public class PostService {
     }
 
     public List<PostDto> getRecentPublishedPosts() {
-        List<Post> Posts = postRepository.findTop30ByIsPublishedTrueOrderByCreateDateDesc();
+        Sort sort = Sort.by("createDate").descending();
+        List<Post> Posts = postRepository.findTop30ByIsPublishedTrue(sort);
 
         return Posts.stream()
                 .map(PostDto::new)
@@ -45,14 +46,18 @@ public class PostService {
     }
 
     public Page<PostDto> getPublishedPosts(int page) {
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
 
-        Page<Post> posts = postRepository.findByIsPublishedTrueOrderByCreateDateDesc(pageable);
+        Page<Post> postPage = postRepository.findByIsPublishedTrue(pageable);
 
-        List<PostDto> postDtos = posts.getContent().stream()
-                .map(PostDto::new)
-                .toList();
+        return postPage.map(PostDto::new);
+    }
 
-        return new PageImpl<>(postDtos, pageable, posts.getTotalElements());
+    public Page<PostDto> getMyPosts(Member member, int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
+
+        Page<Post> postPage = postRepository.findByAuthor(member, pageable);
+
+        return postPage.map(PostDto::new);
     }
 }
