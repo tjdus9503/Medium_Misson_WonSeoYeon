@@ -75,7 +75,7 @@ public class Rq {
 
     public String historyBack(String msg) {
         resp.setStatus(400);
-        req.setAttribute("msg", msg);
+        req.setAttribute("msg", msg); // 템플릿에서 msg 변수 사용
 
         return "/global/js";
     }

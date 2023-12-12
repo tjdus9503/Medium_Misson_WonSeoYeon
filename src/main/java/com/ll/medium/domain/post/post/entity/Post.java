@@ -29,7 +29,7 @@ public class Post {
     @NotBlank
     private String title;
     @NotBlank
-    private String body;
+    private String content;
     @ManyToOne
     private Member author;
     @CreatedDate

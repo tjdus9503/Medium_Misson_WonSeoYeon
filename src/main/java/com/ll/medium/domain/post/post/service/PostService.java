@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,11 +22,11 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public void write(Member author, String title, String body, boolean isPublished) {
+    public void write(Member author, String title, String content, boolean isPublished) {
         Post post = Post.builder()
                 .author(author)
                 .title(title)
-                .body(body)
+                .content(content)
                 .isPublished(isPublished)
                 .build();
 
@@ -59,5 +60,11 @@ public class PostService {
         Page<Post> postPage = postRepository.findByAuthor(member, pageable);
 
         return postPage.map(PostDto::new);
+    }
+
+    public Optional<PostDto> findById(long id) {
+        Optional<Post> postOptional = postRepository.findById(id);
+
+        return postOptional.map(PostDto::new);
     }
 }

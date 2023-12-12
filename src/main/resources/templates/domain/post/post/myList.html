@@ -3,30 +3,31 @@
     <title>내 글 목록</title>
 </head>
 <body>
-    <div layout:fragment="content" class="container mx-auto my-3">
+    <div layout:fragment="content" class="container mx-auto my-3 max-w-3xl">
         <h1 class="font-bold mb-2"> 내 글 목록</h1>
         <!-- 테이블 -->
         <div class="overflow-x-auto">
             <table class="table">
                 <thead>
-                <tr class="text-center">
-                    <th class="w-1/10">번호</th>
-                    <th class="w-7/12">제목</th>
-                    <th class="w-2/12">작성자</th>
-                    <th class="w-2/12">작성일시</th>
-                </tr>
+                    <tr class="text-center">
+                        <th class="w-1/12">번호</th>
+                        <th class="w-6/12">제목</th>
+                        <th class="w-2/12">작성자</th>
+                        <th class="w-3/12">작성일시</th>
+                    </tr>
                 </thead>
 
                 <tbody>
-                <tr th:each="post : ${paging}" class="hover text-center">
-                    <th th:text="${post.id}"></th>
-                    <td class="text-left">
-                        <span th:text="${post.title}"></span>
-                        <span th:if="${!post.published}" class="badge badge-success badge-md ml-2" style="color: white"><i class="fa-solid fa-lock text-xs mr-1"></i>비공개</span>
-                    </td>
-                    <td th:text="${post.authorName}"></td>
-                    <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"></td>
-                </tr>
+                    <tr th:each="post : ${paging}" class="hover text-center">
+                        <th th:text="${post.id}"></th>
+                        <td class="text-left">
+                            <a th:text="${post.title}" th:href="|/post/${post.getId()}|"></a>
+                            <span th:if="${!post.published}" class="text-gray-500 mx-1 text-xs">·</span>
+                            <span th:if="${!post.published}" class="badge badge-success badge-sm" style="color: white"><i class="fa-solid fa-lock text-[0.5rem] mr-1"></i>비공개</span>
+                        </td>
+                        <td th:text="${post.authorUsername}"></td>
+                        <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    </tr>
                 </tbody>
             </table>
         </div>

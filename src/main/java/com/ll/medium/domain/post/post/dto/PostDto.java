@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 public class PostDto {
     private Long id;
     private String title;
-    private String body;
-    private String authorName;
+    private String content;
+    private String authorUsername;
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
     private boolean isPublished;
@@ -18,8 +18,8 @@ public class PostDto {
     public PostDto(Post post) {
         id = post.getId();
         title = post.getTitle();
-        body = post.getBody();
-        authorName = post.getAuthor().getUsername();
+        content = post.getContent();
+        authorUsername = post.getAuthor().getUsername();
         createDate = post.getCreateDate();
         modifyDate = post.getModifyDate();
         isPublished = post.isPublished();

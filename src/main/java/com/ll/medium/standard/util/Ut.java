@@ -5,7 +5,7 @@ import java.io.StringWriter;
 
 public class Ut {
     public static class exception {
-        public static String toString(Exception e) {
+        public static String toString(Exception e) { // 에러 메시지 생성 함수
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String stackTrace = sw.toString();

@@ -33,7 +33,7 @@
         const queryParams = getQueryParams();
 
         if (queryParams.msg) {
-            toastNotice(queryParams.msg);
+            toastNotice(queryParams.msg); // queryParams.msg 에는 ttl을 포함시켜서, 일정 시간이 지나면 토스트 생기지 않음.
         }
 
         /* historyBack에 대한 msg 알림 처리 */
@@ -42,7 +42,7 @@
 
             if (historyBackMsg) {
                 toastWarning(historyBackMsg);
-                localStorage.removeItem('historyBackMsg');
+                localStorage.removeItem('historyBackMsg'); // historyBackMsg 가 토스트 알림으로 한 번만 나타나게 된다.
             }
         });
     </script>
