@@ -22,7 +22,7 @@
                     <th th:text="${post.id}"></th>
                     <td class="text-left">
                         <span th:text="${post.title}"></span>
-                        <span th:if="${!post.published}" class="badge badge-success badge-md ml-2" style="color: white">비공개</span>
+                        <span th:if="${!post.published}" class="badge badge-success badge-md ml-2" style="color: white"><i class="fa-solid fa-lock text-xs mr-1"></i>비공개</span>
                     </td>
                     <td th:text="${post.authorName}"></td>
                     <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"></td>
