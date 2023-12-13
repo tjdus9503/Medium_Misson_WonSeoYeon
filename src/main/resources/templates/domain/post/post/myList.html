@@ -19,7 +19,7 @@
 
                 <tbody>
                     <tr th:each="post : ${paging}" class="hover text-center">
-                        <th th:text="${post.id}"></th>
+                        <td th:text="${post.id}" class="text-xs"></td>
                         <td class="text-left">
                             <a th:text="${post.title}" th:href="|/post/${post.getId()}|"></a>
                             <span th:if="${!post.published}" class="text-gray-500 mx-1 text-xs">·</span>

@@ -14,7 +14,7 @@
 
             <tbody>
                 <tr th:each="post : ${posts}" class="hover text-center">
-                    <th th:text="${post.id}"></th>
+                    <td th:text="${post.id}" class="text-xs"></td>
                     <td class="text-left">
                         <a th:text="${post.title}" th:href="|/post/${post.getId()}|"></a>
                     </td>
