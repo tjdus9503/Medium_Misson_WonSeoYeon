@@ -6,11 +6,11 @@ import lombok.Data;
 
 @Data
 public class WriteForm {
-    @Size(min = 3, max = 30)
+    @Size(max = 30)
     @NotBlank
     private String title;
 
-    @Size(min = 3, max = 5000)
+    @Size(max = 5000)
     @NotBlank
     private String content;
 

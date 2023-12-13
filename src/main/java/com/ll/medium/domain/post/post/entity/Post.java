@@ -29,6 +29,7 @@ public class Post {
     @NotBlank
     private String title;
     @NotBlank
+    @Column(columnDefinition = "TEXT")
     private String content;
     @ManyToOne
     private Member author;
