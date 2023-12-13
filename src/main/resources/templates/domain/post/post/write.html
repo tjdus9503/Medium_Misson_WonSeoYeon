@@ -23,13 +23,42 @@
                     <i class="fa-solid fa-arrow-left mr-2"></i>
                     나가기
                 </a>
-                <button class="btn btn-success m-1"
-                        style="color: white; font-size: 1.125rem; border-radius: 1.5rem; padding: 0.5rem 1rem; margin: 0.25rem;"
-                        type="submit">
+                <button id="submit-btn" class="m-1 px-4 py-2 bg-emerald-500 text-white text-lg rounded-2xl hover:bg-emerald-400">
                     출간하기
                 </button>
             </div>
         </form>
+        <script>
+            $(document).ready(function(){
+                $("#submit-btn").click(function(event){
+                    event.preventDefault(); // prevent the default action
+
+                    submitWriteForm($(this).closest("form")[0]);
+                });
+            });
+
+            function submitWriteForm(form) {
+                form.title.value = form.title.value.trim();
+
+                if (form.title.value.length == 0) {
+                    toastWarning('제목을 입력해주세요.');
+                    form.title.focus();
+
+                    return;
+                }
+
+                form.content.value = form.content.value.trim();
+
+                if (form.content.value.length == 0) {
+                    toastWarning('내용을 입력해주세요.');
+                    form.content.focus();
+
+                    return;
+                }
+
+                form.submit();
+            }
+        </script>
     </div>
 </body>
 
