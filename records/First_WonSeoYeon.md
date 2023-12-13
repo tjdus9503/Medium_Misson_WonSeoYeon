@@ -46,7 +46,7 @@
 
 글 작성
 - [x] GET /post/write : 글 작성 폼
-- [ ] POST /post/write : 글 작성 처리
+- [x] POST /post/write : 글 작성 처리
 
 글 수정
 - [ ] GET /post/1/modify : 1번 글 수정 폼
@@ -61,9 +61,9 @@
 
 폼
 글 쓰기 폼
-- [ ] title
-- [ ] body
-- [ ] isPublished
+- [x] title
+- [x] body
+- [x] isPublished
   - 체크박스
   - value="true"
 

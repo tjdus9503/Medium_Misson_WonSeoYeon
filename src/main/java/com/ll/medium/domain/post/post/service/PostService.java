@@ -22,7 +22,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public void write(Member author, String title, String content, boolean isPublished) {
+    public PostDto write(Member author, String title, String content, boolean isPublished) {
         Post post = Post.builder()
                 .author(author)
                 .title(title)
@@ -31,6 +31,8 @@ public class PostService {
                 .build();
 
         postRepository.save(post);
+
+        return new PostDto(post);
     }
 
     public long count() {

@@ -1,9 +1,11 @@
 package com.ll.medium.domain.post.post.controller;
 
 import com.ll.medium.domain.post.post.dto.PostDto;
+import com.ll.medium.domain.post.post.form.WriteForm;
 import com.ll.medium.domain.post.post.service.PostService;
 import com.ll.medium.global.rq.Rq;
 import com.ll.medium.standard.exception.DataNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -70,7 +72,10 @@ public class PostController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/write")
-    public String write2 () {
-        return "redirect:/post/list";
+    public String write (@Valid WriteForm writeForm) {
+        boolean isPublished = writeForm.getIsPublished() != null;
+        PostDto postDto = postService.write(rq.getMember(), writeForm.getTitle(), writeForm.getContent(), isPublished);
+
+        return rq.redirect("/post/myList", "%d번 게시물 생성되었습니다.".formatted(postDto.getId()));
     }
 }
