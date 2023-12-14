@@ -1,6 +1,7 @@
 package com.ll.medium.domain.post.post.service;
 
 import com.ll.medium.domain.member.member.entity.Member;
+import com.ll.medium.domain.member.member.service.MemberService;
 import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.entity.Post;
 import com.ll.medium.domain.post.post.repository.PostRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
+    private final MemberService memberService;
     private final PostRepository postRepository;
 
     @Transactional
@@ -40,7 +43,7 @@ public class PostService {
         return postRepository.count();
     }
 
-    public List<PostDto> getRecentPublishedPosts() {
+    public List<PostDto> findTop30ByIsPublishedTrue() {
         Sort sort = Sort.by("createDate").descending();
         List<Post> Posts = postRepository.findTop30ByIsPublishedTrue(sort);
 
@@ -49,7 +52,7 @@ public class PostService {
                 .toList();
     }
 
-    public Page<PostDto> getPublishedPosts(int page) {
+    public Page<PostDto> findByIsPublishedTrue(int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
 
         Page<Post> postPage = postRepository.findByIsPublishedTrue(pageable);
@@ -57,22 +60,50 @@ public class PostService {
         return postPage.map(PostDto::new);
     }
 
-    public Page<PostDto> getMyPosts(Member member, int page) {
+    public Page<PostDto> findByAuthor(Member author, int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
 
-        Page<Post> postPage = postRepository.findByAuthor(member, pageable);
+        Page<Post> postPage = postRepository.findByAuthor(author, pageable);
 
         return postPage.map(PostDto::new);
     }
 
-    public Optional<PostDto> findById(long id) {
+    public RsData<Page<PostDto>> findByAuthorAndIsPublishedTrue(String authorUsername, int page) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
+
+        Optional<Member> memberOptional = memberService.findByUsername(authorUsername);
+
+        if (memberOptional.isEmpty()) {
+            return new RsData<>("400", "존재하지 않는 작성자입니다.");
+        }
+        else {
+            Page<Post> postPage = postRepository.findByAuthorAndIsPublishedTrue(memberOptional.get(), pageable);
+            return new RsData<>("200", "성공", postPage.map(PostDto::new));
+        }
+    }
+
+    public RsData<PostDto> findById(long id, User reqUser) {
         Optional<Post> postOptional = postRepository.findById(id);
 
-        return postOptional.map(PostDto::new);
+        // 조건1 [필수 true] : 글이 존재해야한다.
+        // 조건2 [둘 중 하나 true] : (1)공개글
+        // 조건3 [둘 중 하나 true] : (2)요청자와 작성자가 동일
+        if (postOptional.isPresent() &&
+                (postOptional.get().isPublished() ||
+                        (reqUser != null && reqUser.getUsername().equals(postOptional.get().getAuthor().getUsername())))
+        ) {
+            return new RsData<>("200", "성공", new PostDto(postOptional.get()));
+        }
+        // (조건 1 = false) 글이 존재하지 않는 경우
+        // (조건 2 & 3 = false) 비공개글을 다른 유저가 요청하는 경우
+        // 두 경우에 동일한 메시지를 클라이언트에게 전달한다. (비공개 여부도 노출하지 않는다.)
+        else {
+            return new RsData<>("400", "해당 글이 존재하지 않습니다");
+        }
     }
 
     public RsData<PostDto> findByIdAndCheckAuthor(long id, Member reqUser) {
-        Optional<PostDto> postDtoOptional = findById(id);
+        Optional<PostDto> postDtoOptional = postRepository.findById(id).map(PostDto::new);
 
         // 예외 처리 1 : 글이 존재하지 않는 경우
         if (postDtoOptional.isEmpty()) {

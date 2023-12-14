@@ -13,10 +13,10 @@
         </div>
         <!-- 작성자, 작성 날짜 등 -->
         <p class="text-sm text-gray-500">
-            <span th:text="|${post.authorUsername}|"></span>
+            <a th:text="${post.authorUsername}" th:href="|/b/${post.authorUsername}|"></a>
 
             <span class="mx-1">·</span>
-            <span th:text="|${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}|"></span>
+            <span th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"></span>
 
             <span th:if="${!post.published}" class="mx-1">·</span>
             <span th:if="${!post.published}" class="badge badge-success badge-md" style="color: white"><i class="fa-solid fa-lock text-[0.7rem] mr-1"></i>비공개</span>

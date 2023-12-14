@@ -18,4 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByIsPublishedTrue(Pageable pageable);
 
     Page<Post> findByAuthor(Member author, Pageable pageable);
+
+    Page<Post> findByAuthorAndIsPublishedTrue(Member author, Pageable pageable);
 }
