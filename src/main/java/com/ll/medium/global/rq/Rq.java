@@ -2,6 +2,7 @@ package com.ll.medium.global.rq;
 
 import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.domain.member.member.service.MemberService;
+import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.global.rsData.RsData;
 import com.ll.medium.standard.util.Ut;
 import jakarta.annotation.PostConstruct;
@@ -92,5 +93,9 @@ public class Rq {
     public String redirectOrBack(String url, RsData<?> rs) {
         if (rs.isFail()) return historyBack(rs.getMsg());
         return redirect(url, rs.getMsg());
+    }
+
+    public boolean isOwner(PostDto postDto) {
+        return user.getUsername().equals(postDto.getAuthorUsername());
     }
 }

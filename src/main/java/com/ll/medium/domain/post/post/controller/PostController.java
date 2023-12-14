@@ -73,7 +73,12 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/write")
     public String write (@Valid WriteForm writeForm) {
-        boolean isPublished = writeForm.getIsPublished() != null && writeForm.getIsPublished().equals("true");
+        Boolean isPublished = writeForm.getIsPublished();
+
+        if (isPublished == null) {
+            isPublished = false; // 체크박스가 체크되지 않았을 때, false로 설정
+        }
+
         PostDto postDto = postService.write(rq.getMember(), writeForm.getTitle(), writeForm.getContent(), isPublished);
 
         return rq.redirect("/post/myList", "%d번 게시물 생성되었습니다.".formatted(postDto.getId()));

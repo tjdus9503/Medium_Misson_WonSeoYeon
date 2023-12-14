@@ -14,5 +14,5 @@ public class WriteForm {
     @NotBlank
     private String content;
 
-    private String isPublished;
+    private Boolean isPublished;
 }
