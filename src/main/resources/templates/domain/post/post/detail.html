@@ -8,7 +8,7 @@
         <h1 class="text-3xl font-semibold mb-4" th:text="${post.title}"></h1>
         <!-- 수정 삭제 링크 -->
         <div th:if="${@rq.isOwner(post)}" class="flex justify-end space-x-2 mb-4 text-gray-400 text-md">
-            <a th:href="|/post/${post.id}/modify|" method="PUT" class="hover:text-gray-500">수정</a>
+            <a th:href="|/post/${post.id}/modify|" class="hover:text-gray-500">수정</a>
             <a th:href="|/post/${post.id}/delete|" method="DELETE" class="hover:text-gray-500">삭제</a>
         </div>
         <!-- 작성자, 작성 날짜 등 -->
