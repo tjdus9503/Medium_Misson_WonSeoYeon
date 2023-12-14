@@ -4,6 +4,7 @@ import com.ll.medium.domain.member.member.entity.Member;
 import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.entity.Post;
 import com.ll.medium.domain.post.post.repository.PostRepository;
+import com.ll.medium.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -68,5 +69,47 @@ public class PostService {
         Optional<Post> postOptional = postRepository.findById(id);
 
         return postOptional.map(PostDto::new);
+    }
+
+    public RsData<PostDto> findByIdAndCheckAuthor(long id, Member reqUser) {
+        Optional<PostDto> postDtoOptional = findById(id);
+
+        // 예외 처리 1 : 글이 존재하지 않는 경우
+        if (postDtoOptional.isEmpty()) {
+            return new RsData<>("400", "해당 글이 존재하지 않습니다.");
+        }
+
+        PostDto postDto = postDtoOptional.get();
+
+        // 예외 처리 2 : 요청자가 작성자가 아닌 경우
+        if (!reqUser.getUsername().equals(postDto.getAuthorUsername())) {
+            return new RsData<>("400", "수정 권한이 없습니다.");
+        }
+
+        return new RsData<>("200", "", postDto);
+    }
+
+    @Transactional
+    public RsData<PostDto> modify(Member reqUser, long id, String title, String content, boolean isPublished) {
+        Optional<Post> postOptional = postRepository.findById(id);
+
+        // 예외 처리 1 : 글이 존재하지 않는 경우
+        if (postOptional.isEmpty()) {
+            return new RsData<>("400", "해당 글이 존재하지 않습니다.");
+        }
+
+        Post post = postOptional.get();
+        String authorUsername = post.getAuthor().getUsername();
+
+        // 예외 처리 2 : 요청자가 작성자가 아닌 경우
+        if (!reqUser.getUsername().equals(authorUsername)) {
+            return new RsData<>("400", "수정 권한이 없습니다.");
+        }
+
+        post.setTitle(title);
+        post.setContent(content);
+        post.setPublished(isPublished);
+
+        return new RsData<>("200", "%d번 게시물 수정되었습니다.".formatted(post.getId()), new PostDto(post));
     }
 }

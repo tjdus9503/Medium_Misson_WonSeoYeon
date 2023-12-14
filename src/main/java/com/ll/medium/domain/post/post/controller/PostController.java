@@ -4,6 +4,7 @@ import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.form.WriteForm;
 import com.ll.medium.domain.post.post.service.PostService;
 import com.ll.medium.global.rq.Rq;
+import com.ll.medium.global.rsData.RsData;
 import com.ll.medium.standard.exception.DataNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -73,11 +74,8 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/write")
     public String write (@Valid WriteForm writeForm) {
-        Boolean isPublished = writeForm.getIsPublished();
-
-        if (isPublished == null) {
-            isPublished = false; // 체크박스가 체크되지 않았을 때, false로 설정
-        }
+        // 체크박스가 체크되지 않았을 때, false로 설정
+        boolean isPublished = writeForm.getIsPublished() != null && writeForm.getIsPublished();
 
         PostDto postDto = postService.write(rq.getMember(), writeForm.getTitle(), writeForm.getContent(), isPublished);
 
@@ -87,24 +85,26 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}/modify")
     public String modify (@PathVariable("id") int id, Model model) {
-        Optional<PostDto> postDtoOptional = postService.findById(id);
+        RsData<PostDto> rsPostDto = postService.findByIdAndCheckAuthor(id, rq.getMember());
 
-        // 예외 처리 1 : 글이 존재하지 않는 경우
-        if (postDtoOptional.isEmpty()) {
-            return rq.historyBack(new DataNotFoundException("해당 글이 존재하지 않습니다."));
+        if (rsPostDto.isFail()) {
+            return rq.historyBack(rsPostDto.getMsg());
         }
+        else {
+            model.addAttribute("post", rsPostDto.getData());
 
-        PostDto postDto = postDtoOptional.get();
-        String reqUsername = rq.getUser().getUsername();
-        String authorUsername = postDto.getAuthorUsername();
-
-        // 예외 처리 2 : 요청자가 작성자가 아닌 경우
-        if (!reqUsername.equals(authorUsername)) {
-            return rq.historyBack(new RuntimeException("수정 권한이 없습니다."));
+            return "/domain/post/post/modify";
         }
+    }
 
-        model.addAttribute("post", postDto);
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}/modify")
+    public String modify (@PathVariable("id") long id, @Valid WriteForm writeForm) {
+        // 체크박스가 체크되지 않았을 때, false로 설정
+        boolean isPublished = writeForm.getIsPublished() != null && writeForm.getIsPublished();
 
-        return "/domain/post/post/modify";
+        RsData<PostDto> rsPostDto = postService.modify(rq.getMember(), id, writeForm.getTitle(), writeForm.getContent(), isPublished);
+
+        return rq.redirectOrBack("/post/myList", rsPostDto);
     }
 }
