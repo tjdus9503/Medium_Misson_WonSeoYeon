@@ -1,5 +1,6 @@
 package com.ll.medium.domain.home.home.controller;
 
+
 import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.service.PostService;
 import com.ll.medium.global.rq.Rq;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+
 
 @Controller
 @RequiredArgsConstructor
