@@ -6,7 +6,7 @@
     <div layout:fragment="content" class="container mx-auto p-4 max-w-2xl">
         <form th:action method="post">
             <!-- 글 제목 -->
-            <input type="text" name="title" maxlength="30" placeholder="제목 입력하세요" class="w-full max-w-auto rounded-md p-2 focus:outline-none text-4xl font-semibold">
+            <input type="text" name="title" th:value="${post.title}" maxlength="30" placeholder="제목 입력하세요" class="w-full max-w-auto rounded-md p-2 focus:outline-none text-4xl font-semibold">
             <!-- 작성자, 작성 날짜 등 -->
             <p class="text-sm text-gray-500"></p>
 
@@ -14,12 +14,12 @@
 
             <!-- 글 내용 -->
             <div class="my-4">
-                <textarea name="content" maxlength="5000" class="w-full max-w-auto rounded-md p-2 focus:outline-none text-lg" placeholder="당신의 이야기를 적어보세요..." rows="15"></textarea>
+                <textarea name="content" th:text="${post.content}" maxlength="5000" class="w-full max-w-auto rounded-md p-2 focus:outline-none text-lg" placeholder="당신의 이야기를 적어보세요..." rows="15"></textarea>
             </div>
 
             <!-- 공개 여부 체크 -->
             <div class="my-4 text-right">
-                <input type="checkbox" id="isPublished" name="isPublished" value="true" checked>
+                <input type="checkbox" id="isPublished" name="isPublished" th:checked="${post.isPublished}">
                 <label for="isPublished">이 글을 공개합니다.</label>
             </div>
 

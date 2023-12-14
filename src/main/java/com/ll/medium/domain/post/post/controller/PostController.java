@@ -83,4 +83,28 @@ public class PostController {
 
         return rq.redirect("/post/myList", "%d번 게시물 생성되었습니다.".formatted(postDto.getId()));
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/modify")
+    public String modify (@PathVariable("id") int id, Model model) {
+        Optional<PostDto> postDtoOptional = postService.findById(id);
+
+        // 예외 처리 1 : 글이 존재하지 않는 경우
+        if (postDtoOptional.isEmpty()) {
+            return rq.historyBack(new DataNotFoundException("해당 글이 존재하지 않습니다."));
+        }
+
+        PostDto postDto = postDtoOptional.get();
+        String reqUsername = rq.getUser().getUsername();
+        String authorUsername = postDto.getAuthorUsername();
+
+        // 예외 처리 2 : 요청자가 작성자가 아닌 경우
+        if (!reqUsername.equals(authorUsername)) {
+            return rq.historyBack(new RuntimeException("수정 권한이 없습니다."));
+        }
+
+        model.addAttribute("post", postDto);
+
+        return "/domain/post/post/modify";
+    }
 }
