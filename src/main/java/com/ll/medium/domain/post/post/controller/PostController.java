@@ -107,4 +107,12 @@ public class PostController {
 
         return rq.redirectOrBack("/post/myList", rsPostDto);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}/delete")
+    public String delete (@PathVariable("id") long id) {
+        RsData<PostDto> rsPostDto = postService.delete(rq.getMember(), id);
+
+        return rq.redirectOrBack("/post/myList", rsPostDto);
+    }
 }

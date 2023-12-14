@@ -110,6 +110,28 @@ public class PostService {
         post.setContent(content);
         post.setPublished(isPublished);
 
-        return new RsData<>("200", "%d번 게시물 수정되었습니다.".formatted(post.getId()), new PostDto(post));
+        return new RsData<>("200", "%d번 글이 수정되었습니다.".formatted(id), new PostDto(post));
+    }
+
+    @Transactional
+    public RsData<PostDto> delete(Member reqUser, long id) {
+        Optional<Post> postOptional = postRepository.findById(id);
+
+        // 예외 처리 1 : 글이 존재하지 않는 경우
+        if (postOptional.isEmpty()) {
+            return new RsData<>("400", "해당 글이 존재하지 않습니다.");
+        }
+
+        Post post = postOptional.get();
+        String authorUsername = post.getAuthor().getUsername();
+
+        // 예외 처리 2 : 요청자가 작성자가 아닌 경우
+        if (!reqUser.getUsername().equals(authorUsername)) {
+            return new RsData<>("400", "삭제 권한이 없습니다.");
+        }
+
+        postRepository.delete(post);
+
+        return new RsData<>("200", "%d번 글이 삭제되었습니다.".formatted(id));
     }
 }
