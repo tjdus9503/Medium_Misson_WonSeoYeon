@@ -33,11 +33,16 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myList")
     public String myList (Model model, @RequestParam(defaultValue = "1") int page) {
-        Page<PostDto> paging = postService.findByAuthor(rq.getMember(), page - 1);
+        RsData<Page<PostDto>> rsPaging = postService.findByAuthor(rq.getUser(), rq.getMember().getUsername(), page - 1);
 
-        model.addAttribute("paging", paging);
+        if (rsPaging.isFail()) {
+            return rq.historyBack(rsPaging.getMsg());
+        }
+        else {
+            model.addAttribute("paging", rsPaging.getData());
 
-        return "/domain/post/post/myList";
+            return "/domain/post/post/myList";
+        }
     }
 
     @GetMapping("/{id}")

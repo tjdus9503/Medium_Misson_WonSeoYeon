@@ -4,7 +4,9 @@
 </head>
 <body>
     <div layout:fragment="content" class="container mx-auto my-3 max-w-3xl">
-        <h1 th:text="${authorUsername}" class="font-bold mb-2"></h1>
+        <h1 class="font-bold mb-2">
+            <a th:text="${authorUsername}" th:href="|/b/${authorUsername}|"></a>
+        </h1>
         <!-- 테이블 -->
         <div class="overflow-x-auto">
             <table class="table">
@@ -21,7 +23,7 @@
                     <tr th:each="post : ${paging}" class="hover text-center">
                         <td th:text="${post.id}" class="text-xs"></td>
                         <td class="text-left">
-                            <a th:text="${post.title}" th:href="|/post/${post.getId()}|"></a>
+                            <a th:text="${post.title}" th:href="|/b/${post.authorUsername}/${post.getId()}|"></a>
                             <span th:if="${!post.published}" class="text-gray-500 mx-1 text-xs">·</span>
                             <span th:if="${!post.published}" class="badge badge-success badge-sm" style="color: white"><i class="fa-solid fa-lock text-[0.5rem] mr-1"></i>비공개</span>
                         </td>

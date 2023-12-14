@@ -60,24 +60,35 @@ public class PostService {
         return postPage.map(PostDto::new);
     }
 
-    public Page<PostDto> findByAuthor(Member author, int page) {
+    public RsData<Page<PostDto>> findByAuthor(User reqUser, String authorUsername, int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
 
-        Page<Post> postPage = postRepository.findByAuthor(author, pageable);
+        Optional<Member> authorOptional = memberService.findByUsername(authorUsername);
 
-        return postPage.map(PostDto::new);
+        if (authorOptional.isEmpty()) {
+            return new RsData<>("400", "해당 작성자는 존재하지 않습니다.");
+        }
+        else if (reqUser == null || !reqUser.getUsername().equals(authorUsername)) {
+            Page<Post> postPage = postRepository.findByAuthorAndIsPublishedTrue(authorOptional.get(), pageable);
+            return new RsData<>("200", "성공", postPage.map(PostDto::new));
+        }
+        else {
+            Member author = authorOptional.get();
+            Page<Post> postPage = postRepository.findByAuthor(author, pageable);
+            return new RsData<>("200", "성공", postPage.map(PostDto::new));
+        }
     }
 
     public RsData<Page<PostDto>> findByAuthorAndIsPublishedTrue(String authorUsername, int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
 
-        Optional<Member> memberOptional = memberService.findByUsername(authorUsername);
+        Optional<Member> authorOptional = memberService.findByUsername(authorUsername);
 
-        if (memberOptional.isEmpty()) {
-            return new RsData<>("400", "존재하지 않는 작성자입니다.");
+        if (authorOptional.isEmpty()) {
+            return new RsData<>("400", "해당 작성자는 존재하지 않습니다.");
         }
         else {
-            Page<Post> postPage = postRepository.findByAuthorAndIsPublishedTrue(memberOptional.get(), pageable);
+            Page<Post> postPage = postRepository.findByAuthorAndIsPublishedTrue(authorOptional.get(), pageable);
             return new RsData<>("200", "성공", postPage.map(PostDto::new));
         }
     }
