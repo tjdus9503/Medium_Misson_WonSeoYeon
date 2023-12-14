@@ -68,9 +68,9 @@
   - value="true"
 
 글 수정 폼
-- [ ] title
-- [ ] body
-- [ ] isPublished
+- [x] title
+- [x] body
+- [x] isPublished
   - 체크박스
   - value="true"
 
