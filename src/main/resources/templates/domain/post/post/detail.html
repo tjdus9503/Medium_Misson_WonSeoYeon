@@ -1,0 +1,33 @@
+<html layout:decorate="~{global/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <title>글 상세 페이지</title>
+</head>
+<body>
+    <div layout:fragment="content" class="container mx-auto p-4 max-w-2xl">
+        <!-- 글 제목 -->
+        <h1 class="text-3xl font-semibold mb-4" th:text="${post.title}"></h1>
+        <!-- 수정 삭제 링크 -->
+        <div th:if="${@rq.isOwner(post)}" class="flex justify-end space-x-2 mb-4 text-gray-400 text-md">
+            <a th:href="|/post/${post.id}/modify|" class="hover:text-gray-500">수정</a>
+            <a th:href="|/post/${post.id}/delete|" method="DELETE" class="hover:text-gray-500">삭제</a>
+        </div>
+        <!-- 작성자, 작성 날짜 등 -->
+        <p class="text-sm text-gray-500">
+            <a th:text="${post.authorUsername}" th:href="|/b/${post.authorUsername}|"></a>
+
+            <span class="mx-1">·</span>
+            <span th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+
+            <span th:if="${!post.published}" class="mx-1">·</span>
+            <span th:if="${!post.published}" class="badge badge-success badge-md" style="color: white"><i class="fa-solid fa-lock text-[0.7rem] mr-1"></i>비공개</span>
+        </p>
+        <hr class="my-4 border-t-1 border-gray-200">
+        <!-- 글 내용 -->
+        <div class="my-4">
+            <p th:text="${post.content}"></p>
+        </div>
+
+        <!-- 댓글, 좋아요 버튼, 공유 기능 등등 -->
+    </div>
+</body>
+</html>

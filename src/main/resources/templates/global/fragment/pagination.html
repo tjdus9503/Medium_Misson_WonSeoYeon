@@ -1,0 +1,41 @@
+<div th:fragment="paginationFragment"
+     th:if="${!paging.isEmpty()}" th:with="currPage = ${paging.number + 1}"
+     class="join w-full justify-center mt-2">
+    <div>
+        <a th:classappend="|${currPage == 1 ? 'btn-warning' : ''} ${paging.totalPages == 1 ? '' : 'join-item'}|"
+           th:text="1"
+           th:href="@{|?page=1|}"
+           class="btn btn-sm"></a>
+    </div>
+
+    <th:block th:if="${paging.totalPages > 1}">
+        <div th:if="${currPage - 4 > 2}">
+            <a th:text="..."
+               th:href="@{|?page=${currPage - 4 - 1}|}"
+               class="join-item btn btn-sm"></a>
+        </div>
+
+        <th:block th:if="${paging.totalPages > 2}">
+            <div th:each="page : ${#numbers.sequence(2, paging.totalPages - 1)}"
+                 th:if="${page >= currPage - 4 && page <= currPage + 4}">
+                <a th:classappend="${page == currPage} ? 'btn-warning'"
+                   th:text="${page}"
+                   th:href="@{|?page=${page}|}"
+                   class="join-item btn btn-sm"></a>
+            </div>
+        </th:block>
+
+        <div th:if="${currPage + 4 < paging.totalPages - 1}">
+            <a th:text="..."
+               th:href="@{|?page=${currPage + 4 + 1}|}"
+               class="join-item btn btn-sm"></a>
+        </div>
+
+        <div>
+            <a th:classappend="${currPage == paging.totalPages} ? 'btn-warning'"
+               th:text="${paging.totalPages}"
+               th:href="@{|?page=${paging.totalPages}|}"
+               class="join-item btn btn-sm"></a>
+        </div>
+    </th:block>
+</div>

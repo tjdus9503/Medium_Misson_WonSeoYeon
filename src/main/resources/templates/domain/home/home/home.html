@@ -1,0 +1,30 @@
+<html layout:decorate="~{global/layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<div layout:fragment="content" class="container mx-auto my-3 max-w-3xl">
+    <h1 class="font-bold mb-2"><i class="fa-solid fa-house mr-2"></i>홈</h1>
+    <div class="overflow-x-auto">
+        <table class="table">
+            <thead>
+                <tr class="text-center">
+                    <th class="w-1/12">번호</th>
+                    <th class="w-6/12">제목</th>
+                    <th class="w-2/12">작성자</th>
+                    <th class="w-3/12">작성일시</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="post : ${posts}" class="hover text-center">
+                    <td th:text="${post.id}" class="text-xs"></td>
+                    <td class="text-left">
+                        <a th:text="${post.title}" th:href="|/post/${post.getId()}|"></a>
+                    </td>
+                    <td>
+                        <a th:text="${post.authorUsername}" th:href="|/b/${post.authorUsername}|"></a>
+                    </td>
+                    <td th:text="${#temporals.format(post.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</html>
