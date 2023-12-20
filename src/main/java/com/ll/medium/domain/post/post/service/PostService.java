@@ -7,10 +7,7 @@ import com.ll.medium.domain.post.post.entity.Post;
 import com.ll.medium.domain.post.post.repository.PostRepository;
 import com.ll.medium.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,13 +40,20 @@ public class PostService {
         return postRepository.count();
     }
 
-    public List<PostDto> findTop30ByIsPublishedTrue() {
-        Sort sort = Sort.by("createDate").descending();
-        List<Post> Posts = postRepository.findTop30ByIsPublishedTrue(sort);
+    public Page<PostDto> findTop30ByIsPublishedTrue(int page) {
 
-        return Posts.stream()
-                .map(PostDto::new)
-                .toList();
+        Sort sort = Sort.by("createDate").descending();
+        List<Post> postList = postRepository.findTop30ByIsPublishedTrue(sort); // 최신 30개 게시물을 조회
+
+        // 최신 30개 게시물 중 요청한 페이지에 해당하는 게시물만 추출
+        int start = page * 10;
+        int end = Math.min((page + 1) * 10, postList.size());
+        List<Post> postSubList = postList.subList(start, end);
+
+        // List<Post>를 Page<Post>로 변환
+        Page<Post> postPage = new PageImpl<>(postSubList, PageRequest.of(page, 10), postList.size());
+
+        return postPage.map(PostDto::new);
     }
 
     public Page<PostDto> findByIsPublishedTrue(int page) {
