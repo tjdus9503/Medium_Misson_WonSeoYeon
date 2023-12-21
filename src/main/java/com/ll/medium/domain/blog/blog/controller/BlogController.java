@@ -3,7 +3,6 @@ package com.ll.medium.domain.blog.blog.controller;
 import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.service.PostService;
 import com.ll.medium.global.rq.Rq;
-import com.ll.medium.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -23,10 +22,10 @@ public class BlogController {
     @GetMapping("/{authorUsername}")
     public String list(Model model, @PathVariable String authorUsername, @RequestParam(defaultValue = "1") int page) {
 
-        RsData<Page<PostDto>> rsPaging = postService.findByAuthor(rq.getUser(), authorUsername, page - 1);
+        Page<PostDto> postDtoPage = postService.findByAuthor(rq.getUser(), authorUsername, page - 1);
 
         model.addAttribute("authorUsername", authorUsername);
-        model.addAttribute("paging", rsPaging.getData());
+        model.addAttribute("paging", postDtoPage);
 
         return "/domain/home/home/authorPostList";
     }
@@ -34,9 +33,9 @@ public class BlogController {
     @GetMapping("/{authorUsername}/{postId}")
     public String detail(Model model, @PathVariable long postId) {
 
-        RsData<PostDto> rsPostDto = postService.findById(postId, rq.getUser());
+        PostDto postDto = postService.findById(postId, rq.getUser());
 
-        model.addAttribute("post", rsPostDto.getData());
+        model.addAttribute("post", postDto);
 
         return "/domain/post/post/detail";
     }

@@ -4,7 +4,6 @@ import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.form.WriteForm;
 import com.ll.medium.domain.post.post.service.PostService;
 import com.ll.medium.global.rq.Rq;
-import com.ll.medium.global.rsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,9 +23,9 @@ public class PostController {
     @GetMapping("/list")
     public String list (Model model, @RequestParam(defaultValue = "1") int page) {
 
-        Page<PostDto> paging = postService.findByIsPublishedTrue(page - 1);
+        Page<PostDto> postDtoPage = postService.findByIsPublishedTrue(page - 1);
 
-        model.addAttribute("paging", paging);
+        model.addAttribute("paging", postDtoPage);
 
         return "/domain/post/post/list";
     }
@@ -35,9 +34,9 @@ public class PostController {
     @GetMapping("/myList")
     public String myList (Model model, @RequestParam(defaultValue = "1") int page) {
 
-        RsData<Page<PostDto>> rsPaging = postService.findByAuthor(rq.getUser(), rq.getMember().getUsername(), page - 1);
+        Page<PostDto> postDtoPage = postService.findByAuthor(rq.getUser(), rq.getMember().getUsername(), page - 1);
 
-        model.addAttribute("paging", rsPaging.getData());
+        model.addAttribute("paging", postDtoPage);
 
         return "/domain/post/post/myList";
     }
@@ -45,9 +44,9 @@ public class PostController {
     @GetMapping("/{id}")
     public String detail (Model model, @PathVariable("id") long id) {
 
-        RsData<PostDto> rsPostDto = postService.findById(id, rq.getUser());
+        PostDto postDto = postService.findById(id, rq.getUser());
 
-        model.addAttribute("post", rsPostDto.getData());
+        model.addAttribute("post", postDto);
 
         return "/domain/post/post/detail";
 
@@ -74,9 +73,9 @@ public class PostController {
     @GetMapping("/{id}/modify")
     public String modify (@PathVariable("id") int id, Model model) {
 
-        RsData<PostDto> rsPostDto = postService.findByIdAndCheckAuthor(id, rq.getMember());
+        PostDto postDto = postService.findByIdAndCheckAuthor(id, rq.getMember());
 
-        model.addAttribute("post", rsPostDto.getData());
+        model.addAttribute("post", postDto);
 
         return "/domain/post/post/modify";
     }
@@ -87,17 +86,17 @@ public class PostController {
         // 체크박스가 체크되지 않았을 때, false로 설정
         boolean isPublished = writeForm.getIsPublished() != null && writeForm.getIsPublished();
 
-        RsData<PostDto> rsPostDto = postService.modify(rq.getMember(), id, writeForm.getTitle(), writeForm.getContent(), isPublished);
+        PostDto postDto = postService.modify(rq.getMember(), id, writeForm.getTitle(), writeForm.getContent(), isPublished);
 
-        return rq.redirect("/post/myList", rsPostDto.getMsg());
+        return rq.redirect("/post/myList", "%d번 글이 수정되었습니다.".formatted(postDto.getId()));
     }
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}/delete")
     public String delete (@PathVariable("id") long id) {
 
-        RsData<PostDto> rsPostDto = postService.delete(rq.getMember(), id);
+        postService.delete(rq.getMember(), id);
 
-        return rq.redirect("/post/myList", rsPostDto.getMsg());
+        return rq.redirect("/post/myList", "%d번 글이 삭제되었습니다.".formatted(id));
     }
 }

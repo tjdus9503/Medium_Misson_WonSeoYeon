@@ -5,7 +5,6 @@ import com.ll.medium.domain.member.member.service.MemberService;
 import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.entity.Post;
 import com.ll.medium.domain.post.post.repository.PostRepository;
-import com.ll.medium.global.rsData.RsData;
 import com.ll.medium.standard.exception.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -72,7 +71,7 @@ public class PostService {
     }
 
     // 작성자의 글 모아보기 (+ 내 글 목록)
-    public RsData<Page<PostDto>> findByAuthor(User reqUser, String authorUsername, int page) {
+    public Page<PostDto> findByAuthor(User reqUser, String authorUsername, int page) {
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
 
@@ -84,18 +83,18 @@ public class PostService {
         // 로그인 하지 않았거나, 작성자가 아닌 경우 : 공개글만 조회
         else if (reqUser == null || !reqUser.getUsername().equals(authorUsername)) {
             Page<Post> postPage = postRepository.findByAuthorAndIsPublishedTrue(authorOptional.get(), pageable);
-            return new RsData<>("200", "성공", postPage.map(PostDto::new));
+            return postPage.map(PostDto::new);
         }
         // 작성자인 경우 : 비공개 포함한 모든 글 조회
         else {
             Member author = authorOptional.get();
             Page<Post> postPage = postRepository.findByAuthor(author, pageable);
-            return new RsData<>("200", "성공", postPage.map(PostDto::new));
+            return postPage.map(PostDto::new);
         }
     }
 
     // 글 상세보기
-    public RsData<PostDto> findById(long id, User reqUser) {
+    public PostDto findById(long id, User reqUser) {
 
         Optional<Post> postOptional = postRepository.findById(id);
 
@@ -106,7 +105,7 @@ public class PostService {
                 (postOptional.get().isPublished() ||
                         (reqUser != null && reqUser.getUsername().equals(postOptional.get().getAuthor().getUsername())))
         ) {
-            return new RsData<>("200", "성공", new PostDto(postOptional.get()));
+            return new PostDto(postOptional.get());
         }
         // (조건 1 = false) 글이 존재하지 않는 경우
         // (조건 2 & 3 = false) 비공개글을 다른 유저가 요청하는 경우
@@ -117,7 +116,7 @@ public class PostService {
     }
 
     // 글 수정 요청
-    public RsData<PostDto> findByIdAndCheckAuthor(long id, Member reqUser) {
+    public PostDto findByIdAndCheckAuthor(long id, Member reqUser) {
 
         Optional<PostDto> postDtoOptional = postRepository.findById(id).map(PostDto::new);
 
@@ -133,12 +132,12 @@ public class PostService {
             throw new RuntimeException("수정 권한이 없습니다.");
         }
 
-        return new RsData<>("200", "", postDto);
+        return postDto;
     }
 
     // 글 수정 처리
     @Transactional
-    public RsData<PostDto> modify(Member reqUser, long id, String title, String content, boolean isPublished) {
+    public PostDto modify(Member reqUser, long id, String title, String content, boolean isPublished) {
 
         Optional<Post> postOptional = postRepository.findById(id);
 
@@ -159,12 +158,12 @@ public class PostService {
         post.setContent(content);
         post.setPublished(isPublished);
 
-        return new RsData<>("200", "%d번 글이 수정되었습니다.".formatted(id), new PostDto(post));
+        return new PostDto(post);
     }
 
     // 글 삭제
     @Transactional
-    public RsData<PostDto> delete(Member reqUser, long id) {
+    public void delete(Member reqUser, long id) {
         
         Optional<Post> postOptional = postRepository.findById(id);
 
@@ -182,7 +181,5 @@ public class PostService {
         }
 
         postRepository.delete(post);
-
-        return new RsData<>("200", "%d번 글이 삭제되었습니다.".formatted(id));
     }
 }
