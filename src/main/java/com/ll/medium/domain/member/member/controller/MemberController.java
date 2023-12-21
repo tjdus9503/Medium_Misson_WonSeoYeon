@@ -29,6 +29,7 @@ public class MemberController {
     @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
     public String join (@Valid JoinForm joinForm) {
+
         if (!joinForm.getPassword().equals(joinForm.getPasswordConfirm())) {
             rq.historyBack("msg");
         }

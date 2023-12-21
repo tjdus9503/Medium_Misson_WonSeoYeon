@@ -46,7 +46,7 @@ public class NotProd {
         List<Member> members = usernames.stream().map(username -> memberService.findByUsername(username).get()).toList();
 
         IntStream.rangeClosed(1, 500).forEach(num -> {
-            Member author = members.get(num % 3);
+            Member author = members.get((num - 1) % 3);
             postService.write(author, "제목 " + num, "내용 " + num, num % 2 != 0);
         });
     }

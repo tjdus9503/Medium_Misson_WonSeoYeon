@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
+
     private final PostService postService;
     private final Rq rq;
 
     @GetMapping("/list")
     public String list (Model model, @RequestParam(defaultValue = "1") int page) {
+
         Page<PostDto> paging = postService.findByIsPublishedTrue(page - 1);
 
         model.addAttribute("paging", paging);
@@ -33,6 +35,7 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myList")
     public String myList (Model model, @RequestParam(defaultValue = "1") int page) {
+
         RsData<Page<PostDto>> rsPaging = postService.findByAuthor(rq.getUser(), rq.getMember().getUsername(), page - 1);
 
         if (rsPaging.isFail()) {
@@ -47,6 +50,7 @@ public class PostController {
 
     @GetMapping("/{id}")
     public String detail (Model model, @PathVariable("id") long id) {
+
         RsData<PostDto> rsPostDto = postService.findById(id, rq.getUser());
 
         if (rsPostDto.isFail()) {
@@ -79,6 +83,7 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}/modify")
     public String modify (@PathVariable("id") int id, Model model) {
+
         RsData<PostDto> rsPostDto = postService.findByIdAndCheckAuthor(id, rq.getMember());
 
         if (rsPostDto.isFail()) {
@@ -105,6 +110,7 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}/delete")
     public String delete (@PathVariable("id") long id) {
+
         RsData<PostDto> rsPostDto = postService.delete(rq.getMember(), id);
 
         return rq.redirectOrBack("/post/myList", rsPostDto);

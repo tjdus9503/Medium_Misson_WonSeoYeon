@@ -15,6 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -22,14 +23,9 @@ public class MemberService {
         return memberRepository.findByUsername(username);
     }
 
-    public Optional<MemberDto> findDtoByUsername(String username) {
-        Optional<Member> memberOptional = this.findByUsername(username);
-
-        return memberOptional.map(MemberDto::new);
-    }
-
     @Transactional
     public RsData<MemberDto> join(String username, String password, String email) {
+
         if (findByUsername(username).isPresent()) {
             return new RsData<>("400", "이미 사용중인 아이디입니다.");
         }

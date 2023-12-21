@@ -23,6 +23,7 @@ public class BlogController {
 
     @GetMapping("/{authorUsername}")
     public String list(Model model, @PathVariable String authorUsername, @RequestParam(defaultValue = "1") int page) {
+
         RsData<Page<PostDto>> rsPaging = postService.findByAuthor(rq.getUser(), authorUsername, page - 1);
 
         if (rsPaging.isFail()) {
@@ -38,6 +39,7 @@ public class BlogController {
 
     @GetMapping("/{authorUsername}/{postId}")
     public String detail(Model model, @PathVariable long postId) {
+
         RsData<PostDto> rsPostDto = postService.findById(postId, rq.getUser());
 
         if (rsPostDto.isFail()) {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
+
     private final PostService postService;
     private final Rq rq;
 

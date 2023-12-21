@@ -19,11 +19,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
+
     private final MemberService memberService;
     private final PostRepository postRepository;
 
+    // 글 작성
     @Transactional
     public PostDto write(Member author, String title, String content, boolean isPublished) {
+
         Post post = Post.builder()
                 .author(author)
                 .title(title)
@@ -40,6 +43,7 @@ public class PostService {
         return postRepository.count();
     }
 
+    // 최신 글 30개 (홈 화면)
     public Page<PostDto> findTop30ByIsPublishedTrue(int page) {
 
         Sort sort = Sort.by("createDate").descending();
@@ -56,7 +60,9 @@ public class PostService {
         return postPage.map(PostDto::new);
     }
 
+    // 글 목록
     public Page<PostDto> findByIsPublishedTrue(int page) {
+
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
 
         Page<Post> postPage = postRepository.findByIsPublishedTrue(pageable);
@@ -64,7 +70,9 @@ public class PostService {
         return postPage.map(PostDto::new);
     }
 
+    // 작성자의 글 모아보기 (+ 내 글 목록)
     public RsData<Page<PostDto>> findByAuthor(User reqUser, String authorUsername, int page) {
+
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
 
         Optional<Member> authorOptional = memberService.findByUsername(authorUsername);
@@ -83,21 +91,9 @@ public class PostService {
         }
     }
 
-    public RsData<Page<PostDto>> findByAuthorAndIsPublishedTrue(String authorUsername, int page) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("createDate").descending());
-
-        Optional<Member> authorOptional = memberService.findByUsername(authorUsername);
-
-        if (authorOptional.isEmpty()) {
-            return new RsData<>("400", "해당 작성자는 존재하지 않습니다.");
-        }
-        else {
-            Page<Post> postPage = postRepository.findByAuthorAndIsPublishedTrue(authorOptional.get(), pageable);
-            return new RsData<>("200", "성공", postPage.map(PostDto::new));
-        }
-    }
-
+    // 글 상세보기
     public RsData<PostDto> findById(long id, User reqUser) {
+
         Optional<Post> postOptional = postRepository.findById(id);
 
         // 조건1 [필수 true] : 글이 존재해야한다.
@@ -111,13 +107,15 @@ public class PostService {
         }
         // (조건 1 = false) 글이 존재하지 않는 경우
         // (조건 2 & 3 = false) 비공개글을 다른 유저가 요청하는 경우
-        // 두 경우에 동일한 메시지를 클라이언트에게 전달한다. (비공개 여부도 노출하지 않는다.)
+        // => 두 경우에 동일한 메시지를 클라이언트에게 전달한다. (비공개 여부를 노출하지 않는다.)
         else {
             return new RsData<>("400", "해당 글이 존재하지 않습니다");
         }
     }
 
+    // 글 수정 요청
     public RsData<PostDto> findByIdAndCheckAuthor(long id, Member reqUser) {
+
         Optional<PostDto> postDtoOptional = postRepository.findById(id).map(PostDto::new);
 
         // 예외 처리 1 : 글이 존재하지 않는 경우
@@ -135,8 +133,10 @@ public class PostService {
         return new RsData<>("200", "", postDto);
     }
 
+    // 글 수정 처리
     @Transactional
     public RsData<PostDto> modify(Member reqUser, long id, String title, String content, boolean isPublished) {
+
         Optional<Post> postOptional = postRepository.findById(id);
 
         // 예외 처리 1 : 글이 존재하지 않는 경우
@@ -159,8 +159,10 @@ public class PostService {
         return new RsData<>("200", "%d번 글이 수정되었습니다.".formatted(id), new PostDto(post));
     }
 
+    // 글 삭제
     @Transactional
     public RsData<PostDto> delete(Member reqUser, long id) {
+        
         Optional<Post> postOptional = postRepository.findById(id);
 
         // 예외 처리 1 : 글이 존재하지 않는 경우
