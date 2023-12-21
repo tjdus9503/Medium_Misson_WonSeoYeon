@@ -27,7 +27,7 @@ public class MemberService {
     public RsData<MemberDto> join(String username, String password, String email) {
 
         if (findByUsername(username).isPresent()) {
-            return new RsData<>("400", "이미 사용중인 아이디입니다.");
+            throw new RuntimeException("이미 사용중인 아이디입니다.");
         }
 
         Member member = Member

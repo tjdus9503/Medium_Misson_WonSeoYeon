@@ -5,7 +5,6 @@ import com.ll.medium.domain.post.post.form.WriteForm;
 import com.ll.medium.domain.post.post.service.PostService;
 import com.ll.medium.global.rq.Rq;
 import com.ll.medium.global.rsData.RsData;
-import com.ll.medium.standard.exception.DataNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,14 +37,9 @@ public class PostController {
 
         RsData<Page<PostDto>> rsPaging = postService.findByAuthor(rq.getUser(), rq.getMember().getUsername(), page - 1);
 
-        if (rsPaging.isFail()) {
-            return rq.historyBack(rsPaging.getMsg());
-        }
-        else {
-            model.addAttribute("paging", rsPaging.getData());
+        model.addAttribute("paging", rsPaging.getData());
 
-            return "/domain/post/post/myList";
-        }
+        return "/domain/post/post/myList";
     }
 
     @GetMapping("/{id}")
@@ -53,14 +47,10 @@ public class PostController {
 
         RsData<PostDto> rsPostDto = postService.findById(id, rq.getUser());
 
-        if (rsPostDto.isFail()) {
-            return rq.historyBack(new DataNotFoundException(rsPostDto.getMsg()));
-        }
-        else {
-            model.addAttribute("post", rsPostDto.getData());
+        model.addAttribute("post", rsPostDto.getData());
 
-            return "/domain/post/post/detail";
-        }
+        return "/domain/post/post/detail";
+
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -86,14 +76,9 @@ public class PostController {
 
         RsData<PostDto> rsPostDto = postService.findByIdAndCheckAuthor(id, rq.getMember());
 
-        if (rsPostDto.isFail()) {
-            return rq.historyBack(rsPostDto.getMsg());
-        }
-        else {
-            model.addAttribute("post", rsPostDto.getData());
+        model.addAttribute("post", rsPostDto.getData());
 
-            return "/domain/post/post/modify";
-        }
+        return "/domain/post/post/modify";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -104,7 +89,7 @@ public class PostController {
 
         RsData<PostDto> rsPostDto = postService.modify(rq.getMember(), id, writeForm.getTitle(), writeForm.getContent(), isPublished);
 
-        return rq.redirectOrBack("/post/myList", rsPostDto);
+        return rq.redirect("/post/myList", rsPostDto.getMsg());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -113,6 +98,6 @@ public class PostController {
 
         RsData<PostDto> rsPostDto = postService.delete(rq.getMember(), id);
 
-        return rq.redirectOrBack("/post/myList", rsPostDto);
+        return rq.redirect("/post/myList", rsPostDto.getMsg());
     }
 }

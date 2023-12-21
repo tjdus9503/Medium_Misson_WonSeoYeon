@@ -6,6 +6,7 @@ import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.entity.Post;
 import com.ll.medium.domain.post.post.repository.PostRepository;
 import com.ll.medium.global.rsData.RsData;
+import com.ll.medium.standard.exception.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.userdetails.User;
@@ -78,12 +79,14 @@ public class PostService {
         Optional<Member> authorOptional = memberService.findByUsername(authorUsername);
 
         if (authorOptional.isEmpty()) {
-            return new RsData<>("400", "해당 작성자는 존재하지 않습니다.");
+            throw new RuntimeException("해당 작성자는 존재하지 않습니다.");
         }
+        // 로그인 하지 않았거나, 작성자가 아닌 경우 : 공개글만 조회
         else if (reqUser == null || !reqUser.getUsername().equals(authorUsername)) {
             Page<Post> postPage = postRepository.findByAuthorAndIsPublishedTrue(authorOptional.get(), pageable);
             return new RsData<>("200", "성공", postPage.map(PostDto::new));
         }
+        // 작성자인 경우 : 비공개 포함한 모든 글 조회
         else {
             Member author = authorOptional.get();
             Page<Post> postPage = postRepository.findByAuthor(author, pageable);
@@ -109,7 +112,7 @@ public class PostService {
         // (조건 2 & 3 = false) 비공개글을 다른 유저가 요청하는 경우
         // => 두 경우에 동일한 메시지를 클라이언트에게 전달한다. (비공개 여부를 노출하지 않는다.)
         else {
-            return new RsData<>("400", "해당 글이 존재하지 않습니다");
+            throw new DataNotFoundException("해당 글이 존재하지 않습니다.");
         }
     }
 
@@ -120,14 +123,14 @@ public class PostService {
 
         // 예외 처리 1 : 글이 존재하지 않는 경우
         if (postDtoOptional.isEmpty()) {
-            return new RsData<>("400", "해당 글이 존재하지 않습니다.");
+            throw new RuntimeException("해당 글이 존재하지 않습니다.");
         }
 
         PostDto postDto = postDtoOptional.get();
 
         // 예외 처리 2 : 요청자가 작성자가 아닌 경우
         if (!reqUser.getUsername().equals(postDto.getAuthorUsername())) {
-            return new RsData<>("400", "수정 권한이 없습니다.");
+            throw new RuntimeException("수정 권한이 없습니다.");
         }
 
         return new RsData<>("200", "", postDto);
@@ -141,7 +144,7 @@ public class PostService {
 
         // 예외 처리 1 : 글이 존재하지 않는 경우
         if (postOptional.isEmpty()) {
-            return new RsData<>("400", "해당 글이 존재하지 않습니다.");
+            throw new RuntimeException("해당 글이 존재하지 않습니다.");
         }
 
         Post post = postOptional.get();
@@ -149,7 +152,7 @@ public class PostService {
 
         // 예외 처리 2 : 요청자가 작성자가 아닌 경우
         if (!reqUser.getUsername().equals(authorUsername)) {
-            return new RsData<>("400", "수정 권한이 없습니다.");
+            throw new RuntimeException("수정 권한이 없습니다.");
         }
 
         post.setTitle(title);
@@ -167,7 +170,7 @@ public class PostService {
 
         // 예외 처리 1 : 글이 존재하지 않는 경우
         if (postOptional.isEmpty()) {
-            return new RsData<>("400", "해당 글이 존재하지 않습니다.");
+            throw new RuntimeException("해당 글이 존재하지 않습니다.");
         }
 
         Post post = postOptional.get();
@@ -175,7 +178,7 @@ public class PostService {
 
         // 예외 처리 2 : 요청자가 작성자가 아닌 경우
         if (!reqUser.getUsername().equals(authorUsername)) {
-            return new RsData<>("400", "삭제 권한이 없습니다.");
+            throw new RuntimeException("삭제 권한이 없습니다.");
         }
 
         postRepository.delete(post);

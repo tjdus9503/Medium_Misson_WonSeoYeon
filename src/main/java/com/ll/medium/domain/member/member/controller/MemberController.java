@@ -31,12 +31,12 @@ public class MemberController {
     public String join (@Valid JoinForm joinForm) {
 
         if (!joinForm.getPassword().equals(joinForm.getPasswordConfirm())) {
-            rq.historyBack("msg");
+            rq.historyBack("비밀번호 확인이 일치하지 않습니다.");
         }
 
         RsData<MemberDto> joinRs = memberService.join(joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail());
 
-        return rq.redirectOrBack("/member/login", joinRs);
+        return rq.redirect("/member/login", joinRs.getMsg());
     }
 
     @PreAuthorize("isAnonymous()")
