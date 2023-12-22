@@ -34,7 +34,10 @@ public class NotProd {
 
     @Transactional
     public void work1() {
+
         if (memberService.count() > 0) return;
+
+        memberService.join("admin", "1234", "aa@aa").getData().getUsername();
 
         String member1_uname = memberService.join("user1", "1234", "aa@aa").getData().getUsername();
         String member2_uname = memberService.join("user2", "1234", "aa@aa").getData().getUsername();

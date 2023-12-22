@@ -97,6 +97,6 @@ public class PostController {
 
         postService.delete(rq.getMember(), id);
 
-        return rq.redirect("/post/myList", "%d번 글이 삭제되었습니다.".formatted(id));
+        return rq.redirect("/post/list", "%d번 글이 삭제되었습니다.".formatted(id));
     }
 }

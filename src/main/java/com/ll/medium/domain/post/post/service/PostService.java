@@ -175,8 +175,8 @@ public class PostService {
         Post post = postOptional.get();
         String authorUsername = post.getAuthor().getUsername();
 
-        // 예외 처리 2 : 요청자가 작성자가 아닌 경우
-        if (!reqUser.getUsername().equals(authorUsername)) {
+        // 예외 처리 2 : 요청자가 작성자가 아닌 경우, 관리자도 아닌 경우
+        if (!reqUser.isAdmin() && !reqUser.getUsername().equals(authorUsername)) {
             throw new RuntimeException("삭제 권한이 없습니다.");
         }
 

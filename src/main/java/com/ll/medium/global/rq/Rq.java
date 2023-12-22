@@ -98,4 +98,8 @@ public class Rq {
     public boolean isOwner(PostDto postDto) {
         return user != null && user.getUsername().equals(postDto.getAuthorUsername());
     }
+
+    public boolean isAdmin() {
+        return user != null && getMember().isAdmin();
+    }
 }
