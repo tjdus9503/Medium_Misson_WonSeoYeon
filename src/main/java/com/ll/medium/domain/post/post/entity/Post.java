@@ -31,7 +31,7 @@ public class Post {
     @NotBlank
     @Column(columnDefinition = "TEXT")
     private String content;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member author;
     @CreatedDate
     private LocalDateTime createDate;

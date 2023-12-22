@@ -4,8 +4,6 @@ import com.ll.medium.domain.post.post.dto.PostDto;
 import com.ll.medium.domain.post.post.form.WriteForm;
 import com.ll.medium.domain.post.post.service.PostService;
 import com.ll.medium.global.rq.Rq;
-import com.ll.medium.global.rsData.RsData;
-import com.ll.medium.standard.exception.DataNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,14 +16,16 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
+
     private final PostService postService;
     private final Rq rq;
 
     @GetMapping("/list")
     public String list (Model model, @RequestParam(defaultValue = "1") int page) {
-        Page<PostDto> paging = postService.findByIsPublishedTrue(page - 1);
 
-        model.addAttribute("paging", paging);
+        Page<PostDto> postDtoPage = postService.findByIsPublishedTrue(page - 1);
+
+        model.addAttribute("paging", postDtoPage);
 
         return "/domain/post/post/list";
     }
@@ -33,30 +33,23 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myList")
     public String myList (Model model, @RequestParam(defaultValue = "1") int page) {
-        RsData<Page<PostDto>> rsPaging = postService.findByAuthor(rq.getUser(), rq.getMember().getUsername(), page - 1);
 
-        if (rsPaging.isFail()) {
-            return rq.historyBack(rsPaging.getMsg());
-        }
-        else {
-            model.addAttribute("paging", rsPaging.getData());
+        Page<PostDto> postDtoPage = postService.findByAuthor(rq.getUser(), rq.getMember().getUsername(), page - 1);
 
-            return "/domain/post/post/myList";
-        }
+        model.addAttribute("paging", postDtoPage);
+
+        return "/domain/post/post/myList";
     }
 
     @GetMapping("/{id}")
     public String detail (Model model, @PathVariable("id") long id) {
-        RsData<PostDto> rsPostDto = postService.findById(id, rq.getUser());
 
-        if (rsPostDto.isFail()) {
-            return rq.historyBack(new DataNotFoundException(rsPostDto.getMsg()));
-        }
-        else {
-            model.addAttribute("post", rsPostDto.getData());
+        PostDto postDto = postService.findById(id, rq.getUser());
 
-            return "/domain/post/post/detail";
-        }
+        model.addAttribute("post", postDto);
+
+        return "/domain/post/post/detail";
+
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -79,16 +72,12 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}/modify")
     public String modify (@PathVariable("id") int id, Model model) {
-        RsData<PostDto> rsPostDto = postService.findByIdAndCheckAuthor(id, rq.getMember());
 
-        if (rsPostDto.isFail()) {
-            return rq.historyBack(rsPostDto.getMsg());
-        }
-        else {
-            model.addAttribute("post", rsPostDto.getData());
+        PostDto postDto = postService.findByIdAndCheckAuthor(id, rq.getMember());
 
-            return "/domain/post/post/modify";
-        }
+        model.addAttribute("post", postDto);
+
+        return "/domain/post/post/modify";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -97,16 +86,17 @@ public class PostController {
         // 체크박스가 체크되지 않았을 때, false로 설정
         boolean isPublished = writeForm.getIsPublished() != null && writeForm.getIsPublished();
 
-        RsData<PostDto> rsPostDto = postService.modify(rq.getMember(), id, writeForm.getTitle(), writeForm.getContent(), isPublished);
+        PostDto postDto = postService.modify(rq.getMember(), id, writeForm.getTitle(), writeForm.getContent(), isPublished);
 
-        return rq.redirectOrBack("/post/myList", rsPostDto);
+        return rq.redirect("/post/myList", "%d번 글이 수정되었습니다.".formatted(postDto.getId()));
     }
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{id}/delete")
     public String delete (@PathVariable("id") long id) {
-        RsData<PostDto> rsPostDto = postService.delete(rq.getMember(), id);
 
-        return rq.redirectOrBack("/post/myList", rsPostDto);
+        postService.delete(rq.getMember(), id);
+
+        return rq.redirect("/post/myList", "%d번 글이 삭제되었습니다.".formatted(id));
     }
 }

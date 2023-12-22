@@ -10,13 +10,10 @@ public class JoinForm {
     @Size(min = 3, max = 25)
     @NotBlank
     private String username;
-
     @NotBlank
     private String password;
-
     @NotBlank
     private String passwordConfirm;
-
     @NotBlank
     @Email
     private String email;
