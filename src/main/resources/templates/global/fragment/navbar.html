@@ -9,7 +9,6 @@
                 <li><a href="/post/write"><i class="fa-regular fa-pen-to-square"></i>글 작성</a></li>
                 <li th:unless="${@rq.logined}"><a href="/member/login"><i class="fa-regular fa-user"></i>로그인</a></li>
                 <li th:unless="${@rq.logined}"><a href="/member/join"><i class="fa-solid fa-user-plus"></i>회원가입</a></li>
-                <li th:if="${@rq.logined}"><a href="/member/logout" method="POST"><i class="fa-solid fa-door-open"></i>로그아웃</a></li>
             </ul>
         </div>
     </div>
@@ -29,13 +28,6 @@
                 </div>
             </div>
             <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-                <li>
-                    <a class="justify-between">
-                        Profile
-                        <span class="badge">New</span>
-                    </a>
-                </li>
-                <li><a>Settings</a></li>
                 <li><a href="/post/myList"><i class="fa-solid fa-list-ul"></i>내 글 목록</a></li>
                 <li><a href="/member/logout" method="POST"><i class="fa-solid fa-door-open"></i>로그아웃</a></li>
             </ul>

@@ -9,7 +9,8 @@
         <!-- 수정 삭제 링크 -->
         <div th:if="${@rq.isOwner(post)}" class="flex justify-end space-x-2 mb-4 text-gray-400 text-md">
             <a th:href="|/post/${post.id}/modify|" class="hover:text-gray-500">수정</a>
-            <a th:href="|/post/${post.id}/delete|" method="DELETE" class="hover:text-gray-500">삭제</a>
+            <a th:href="|/post/${post.id}/delete|" method="DELETE"
+               class="hover:text-gray-500" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a>
         </div>
         <!-- 작성자, 작성 날짜 등 -->
         <p class="text-sm text-gray-500">
